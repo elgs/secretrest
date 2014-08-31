@@ -1,6 +1,6 @@
 {
 	"db_type": "sqlite3",
-	"data_source": "./test.sqlite",
+	"data_source": "./chap-secrets.sqlite",
 	"token_table": "token",
 	
 	"enable_http": true,

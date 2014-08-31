@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/elgs/gorest"
+	"os"
+	"time"
 )
 
 func init() {
 	tableId := "secret"
-	gorest.RegisterDataInterceptor(tableId, &MyDataInterceptor{Id: "secret"})
+	gorest.RegisterDataInterceptor(tableId, &SecretDataInterceptor{Id: "secret"})
 }
 
 type SecretDataInterceptor struct {
@@ -16,18 +18,22 @@ type SecretDataInterceptor struct {
 }
 
 func (this *SecretDataInterceptor) BeforeCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
-	fmt.Println("Here I'm in BeforeCreate")
-	//if db, ok := ds.(*sql.DB); ok {
-	//	_ = db
-	//}
+	userId := context["user_id"]
+	data["CREATOR_ID"] = userId
+	data["CREATE_TIME"] = time.Now()
+	data["UPDATER_ID"] = userId
+	data["UPDATE_TIME"] = time.Now()
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
-	fmt.Println("Here I'm in AfterCreate")
 	//if db, ok := ds.(*sql.DB); ok {
 	//	_ = db
 	//}
-	return nil
+	f, err := os.OpenFile("/Users/elgs/Desktop/chap-secrets", os.O_APPEND|os.O_WRONLY, 0600)
+	defer f.Close()
+	text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
+	_, err = f.WriteString(text)
+	return err
 }
 func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	fmt.Println("Here I'm in BeforeLoad")

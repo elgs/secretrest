@@ -1,7 +1,7 @@
 {
-	"test": {
+	"secret": {
 		"load": false,
-		"create": false,
+		"create": true,
 		"update": false,
 		"duplicate": false,
 		"delete": false,
