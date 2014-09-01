@@ -43,11 +43,11 @@ func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]
 	fmt.Println("Here I'm in AfterLoad")
 	return nil
 }
-func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, oldData map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	fmt.Println("Here I'm in BeforeUpdate")
 	return true, nil
 }
-func (this *SecretDataInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, oldData map[string]interface{}, data map[string]interface{}) error {
+func (this *SecretDataInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	fmt.Println("Here I'm in AfterUpdate")
 	return nil
 }

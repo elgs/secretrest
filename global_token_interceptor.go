@@ -107,7 +107,7 @@ func (this *GlobalTokenInterceptor) BeforeLoad(ds interface{}, context map[strin
 func (this *GlobalTokenInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, oldData map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	if ok, err := checkACL(context, "update"); !ok {
 		return false, err
 	}
@@ -124,17 +124,17 @@ func (this *GlobalTokenInterceptor) BeforeUpdate(ds interface{}, context map[str
 	}
 	return ctn, err
 }
-func (this *GlobalTokenInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, oldData map[string]interface{}, data map[string]interface{}) error {
+func (this *GlobalTokenInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeDuplicate(ds interface{}, context map[string]interface{}, oldData map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeDuplicate(ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	if ok, err := checkACL(context, "duplicate"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterDuplicate(ds interface{}, context map[string]interface{}, oldData map[string]interface{}, data map[string]interface{}) error {
+func (this *GlobalTokenInterceptor) AfterDuplicate(ds interface{}, context map[string]interface{}, id string, newId string) error {
 	return nil
 }
 func (this *GlobalTokenInterceptor) BeforeDelete(ds interface{}, context map[string]interface{}, id string) (bool, error) {
