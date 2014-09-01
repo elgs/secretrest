@@ -1,10 +1,10 @@
 {
 	"secret": {
-		"load": false,
+		"load": true,
 		"create": true,
-		"update": false,
-		"duplicate": false,
-		"delete": false,
+		"update": true,
+		"duplicate": true,
+		"delete": true,
 		"list": true,
 		"query": false
 	}
