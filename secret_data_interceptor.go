@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -63,7 +64,33 @@ func (this *SecretDataInterceptor) AfterDelete(ds interface{}, context map[strin
 }
 func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	*filter += fmt.Sprint(" AND (CREATOR_ID='", context["user_id"], "')")
+	if db, ok := ds.(*sql.DB); ok {
+		err := loadFromFile(db)
+		if err != nil {
+			return true, nil
+		} else {
+			return false, err
+		}
+	}
 	return true, nil
+}
+
+func loadFromFile(db *sql.DB) error {
+	file, err := os.Open("/Users/elgs/Desktop/chap-secrets")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func updateFile(db *sql.DB) error {
