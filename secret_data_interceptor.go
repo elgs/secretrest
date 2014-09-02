@@ -2,12 +2,14 @@ package main
 
 import (
 	"bufio"
+	"code.google.com/p/go-uuid/uuid"
 	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/elgs/gorest"
 	"github.com/elgs/gosqljson"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -26,11 +28,13 @@ var header string = `# Secrets for authentication using CHAP
 `
 
 func (this *SecretDataInterceptor) BeforeCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
-	userId := context["user_id"]
-	data["CREATOR_ID"] = userId
-	data["CREATE_TIME"] = time.Now()
-	data["UPDATER_ID"] = userId
-	data["UPDATE_TIME"] = time.Now()
+	userToken := context["user_token"]
+	if v, ok := userToken.(map[string]string); ok {
+		data["CREATOR_ID"] = v["USER_ID"]
+		data["CREATE_TIME"] = time.Now()
+		data["UPDATER_ID"] = v["USER_ID"]
+		data["UPDATE_TIME"] = time.Now()
+	}
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
@@ -45,9 +49,11 @@ func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string
 	return true, nil
 }
 func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
-	userId := context["user_id"]
-	data["UPDATER_ID"] = userId
-	data["UPDATE_TIME"] = time.Now()
+	userToken := context["user_token"]
+	if v, ok := userToken.(map[string]string); ok {
+		data["UPDATER_ID"] = v["USER_ID"]
+		data["UPDATE_TIME"] = time.Now()
+	}
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
@@ -65,7 +71,7 @@ func (this *SecretDataInterceptor) AfterDelete(ds interface{}, context map[strin
 func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	*filter += fmt.Sprint(" AND (CREATOR_ID='", context["user_id"], "')")
 	if db, ok := ds.(*sql.DB); ok {
-		err := loadFromFile(db)
+		err := loadFromFile(db, context)
 		if err != nil {
 			return true, nil
 		} else {
@@ -75,16 +81,35 @@ func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[str
 	return true, nil
 }
 
-func loadFromFile(db *sql.DB) error {
+func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 	file, err := os.Open("/Users/elgs/Desktop/chap-secrets")
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
+	userId := ""
+	userToken := context["user_token"]
+	if v, ok := userToken.(map[string]string); ok {
+		userId = v["USER_ID"]
+	}
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		text := strings.TrimSpace(scanner.Text())
+		if strings.HasPrefix(text, "#") {
+			continue
+		}
+		fields := strings.Fields(text)
+		if len(fields) >= 4 {
+			values := []interface{}{uuid.New(), fields[0], fields[1], fields[2], fields[3], "0"}
+			values = append(values, userId, time.Now(), userId, time.Now())
+			rows, err := gosqljson.ExecDb(db, `INSERT OR IGNORE INTO secret(ID,CLIENT,SERVER,SECRET,IP_ADDRESSES,
+			STATUS,CREATOR_ID,CREATE_TIME,UPDATER_ID,UPDATE_TIME) VALUES(?,?,?,?,?,?,?,?,?,?)`, values...)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
