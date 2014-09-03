@@ -19,9 +19,11 @@ func init() {
 }
 
 type SecretDataInterceptor struct {
-	*gorest.EchoDataInterceptor
+	*gorest.DefaultDataInterceptor
 	Id string
 }
+
+var filePath string = "/Users/elgs/Desktop/chap-secrets"
 
 var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
@@ -38,7 +40,7 @@ func (this *SecretDataInterceptor) BeforeCreate(ds interface{}, context map[stri
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
-	f, err := os.OpenFile("/Users/elgs/Desktop/chap-secrets", os.O_APPEND|os.O_WRONLY, 0600)
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0600)
 	defer f.Close()
 	text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
 	_, err = f.WriteString(text)
@@ -69,20 +71,28 @@ func (this *SecretDataInterceptor) AfterDelete(ds interface{}, context map[strin
 	return errors.New("Failed to access database.")
 }
 func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
-	*filter += fmt.Sprint(" AND (CREATOR_ID='", context["user_id"], "')")
+	userToken := context["user_token"]
+	if v, ok := userToken.(map[string]string); ok {
+		userId := v["USER_ID"]
+		gorest.MysqlSafe(&userId)
+		*filter += fmt.Sprint(" AND (CREATOR_ID='", userId, "')")
+	} else {
+		return false, errors.New("Invalid user.")
+	}
+
 	if db, ok := ds.(*sql.DB); ok {
 		err := loadFromFile(db, context)
 		if err != nil {
-			return true, nil
-		} else {
 			return false, err
+		} else {
+			return true, nil
 		}
 	}
 	return true, nil
 }
 
 func loadFromFile(db *sql.DB, context map[string]interface{}) error {
-	file, err := os.Open("/Users/elgs/Desktop/chap-secrets")
+	file, err := os.Open(filePath)
 	if err != nil {
 		return err
 	}
@@ -104,7 +114,7 @@ func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 		if len(fields) >= 4 {
 			values := []interface{}{uuid.New(), fields[0], fields[1], fields[2], fields[3], "0"}
 			values = append(values, userId, time.Now(), userId, time.Now())
-			rows, err := gosqljson.ExecDb(db, `INSERT OR IGNORE INTO secret(ID,CLIENT,SERVER,SECRET,IP_ADDRESSES,
+			_, err := gosqljson.ExecDb(db, `INSERT OR IGNORE INTO secret(ID,CLIENT,SERVER,SECRET,IP_ADDRESSES,
 			STATUS,CREATOR_ID,CREATE_TIME,UPDATER_ID,UPDATE_TIME) VALUES(?,?,?,?,?,?,?,?,?,?)`, values...)
 			if err != nil {
 				fmt.Println(err)
@@ -120,7 +130,7 @@ func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 
 func updateFile(db *sql.DB) error {
 	m, err := gosqljson.QueryDbToMap(db, false, "SELECT * FROM secret")
-	f, err := os.OpenFile("/Users/elgs/Desktop/chap-secrets", os.O_WRONLY, 0600)
+	f, err := os.OpenFile(filePath, os.O_WRONLY, 0600)
 	defer f.Close()
 	f.WriteString(header)
 	for _, data := range m {
