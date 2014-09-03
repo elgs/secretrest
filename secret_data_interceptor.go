@@ -142,6 +142,7 @@ func updateFile(db *sql.DB) error {
 	m, err := gosqljson.QueryDbToMap(db, false, "SELECT * FROM secret")
 	f, err := os.OpenFile(filePath, os.O_WRONLY, 0600)
 	defer f.Close()
+	f.Truncate(0)
 	f.WriteString(header)
 	for _, data := range m {
 		text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
