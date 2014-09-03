@@ -21,6 +21,7 @@ var tokenRegistry = make(map[string]map[string]string)
 
 func checkToken(db *sql.DB, id string, key string, context map[string]interface{}) (bool, error) {
 	if id != "" && key != "" && len(tokenRegistry[id]) > 0 && tokenRegistry[id]["TOKEN_KEY"] == key {
+		context["user_token"] = tokenRegistry[id]
 		return true, nil
 	}
 	tokenTable := context["token_table"]
