@@ -50,6 +50,10 @@ func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string
 	context["extra_filter"] = context["user_id"]
 	return true, nil
 }
+func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
+	data["secret"] = ""
+	return nil
+}
 func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
@@ -89,6 +93,12 @@ func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[str
 		}
 	}
 	return true, nil
+}
+func (this *SecretDataInterceptor) AfterListMap(ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
+	for _, v := range data {
+		v["secret"] = ""
+	}
+	return nil
 }
 
 func loadFromFile(db *sql.DB, context map[string]interface{}) error {
