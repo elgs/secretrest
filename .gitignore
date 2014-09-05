@@ -24,6 +24,6 @@ _testmain.go
 
 .DS_Store
 
-gr_sqlite
+secretrest
 chap-secrets.sqlite
 
