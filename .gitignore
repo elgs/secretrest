@@ -22,6 +22,8 @@ _testmain.go
 *.exe
 *.test
 
+.DS_Store
+
 gr_sqlite
 chap-secrets.sqlite
 
