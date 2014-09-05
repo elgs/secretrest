@@ -32,9 +32,9 @@ var header string = `# Secrets for authentication using CHAP
 func (this *SecretDataInterceptor) BeforeCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
-		data["CREATOR_ID"] = v["USER_ID"]
+		data["CREATOR_ID"] = v["ID"]
 		data["CREATE_TIME"] = time.Now()
-		data["UPDATER_ID"] = v["USER_ID"]
+		data["UPDATER_ID"] = v["ID"]
 		data["UPDATE_TIME"] = time.Now()
 	}
 	return true, nil
@@ -57,7 +57,7 @@ func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]
 func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
-		data["UPDATER_ID"] = v["USER_ID"]
+		data["UPDATER_ID"] = v["ID"]
 		data["UPDATE_TIME"] = time.Now()
 	}
 	return true, nil
@@ -77,7 +77,7 @@ func (this *SecretDataInterceptor) AfterDelete(ds interface{}, context map[strin
 func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
-		userId := v["USER_ID"]
+		userId := v["ID"]
 		gorest.MysqlSafe(&userId)
 		*filter += fmt.Sprint(" AND (CREATOR_ID='", userId, "')")
 	} else {
@@ -111,7 +111,7 @@ func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 	userId := ""
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
-		userId = v["USER_ID"]
+		userId = v["ID"]
 	}
 
 	scanner := bufio.NewScanner(file)
