@@ -51,6 +51,7 @@ func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
+	fmt.Println(data)
 	data["secret"] = ""
 	return nil
 }
@@ -80,7 +81,6 @@ func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[str
 		userId := v["ID"]
 		gorest.MysqlSafe(&userId)
 		*filter += fmt.Sprint(" AND (CREATOR_ID='", userId, "')")
-		fmt.Println(*filter)
 	} else {
 		return false, errors.New("Invalid user.")
 	}
