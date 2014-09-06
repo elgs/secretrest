@@ -48,7 +48,12 @@ func (this *SecretDataInterceptor) AfterCreate(ds interface{}, context map[strin
 }
 func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	userToken := context["user_token"]
-	context["extra_filter"] = fmt.Sprint("AND CREATOR_ID='", userToken["ID"], "'")
+	if v, ok := userToken.(map[string]string); ok {
+		context["extra_filter"] = fmt.Sprint("AND CREATOR_ID='", v["ID"], "'")
+	} else {
+		return false, errors.New("Invalid user token.")
+	}
+
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
