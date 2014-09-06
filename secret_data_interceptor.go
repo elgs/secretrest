@@ -47,11 +47,11 @@ func (this *SecretDataInterceptor) AfterCreate(ds interface{}, context map[strin
 	return err
 }
 func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string]interface{}, id string) (bool, error) {
-	context["extra_filter"] = fmt.Sprint("AND CREATOR_ID='", context["user_id"], "'")
+	userToken := context["user_token"]
+	context["extra_filter"] = fmt.Sprint("AND CREATOR_ID='", userToken["ID"], "'")
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
-	fmt.Println(data)
 	data["secret"] = ""
 	return nil
 }
