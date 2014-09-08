@@ -25,6 +25,8 @@ type SecretDataInterceptor struct {
 
 var filePath string = "/etc/ppp/chap-secrets"
 
+//var filePath string = "/Users/elgs/Desktop/chap-secrets"
+
 var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
 `
@@ -146,9 +148,8 @@ func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 
 func updateFile(db *sql.DB) error {
 	m, err := gosqljson.QueryDbToMap(db, false, "SELECT * FROM secret")
-	f, err := os.OpenFile(filePath, os.O_WRONLY, 0600)
+	f, err := os.OpenFile(filePath, os.O_RDWR|os.O_TRUNC, 0600)
 	defer f.Close()
-	f.Truncate(0)
 	f.WriteString(header)
 	for _, data := range m {
 		text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
