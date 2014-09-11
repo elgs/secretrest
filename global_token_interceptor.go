@@ -76,7 +76,7 @@ type GlobalTokenInterceptor struct {
 	Id string
 }
 
-func (this *GlobalTokenInterceptor) BeforeCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeCreate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	if ok, err := checkACL(context, "create"); !ok {
 		return false, err
 	}
@@ -95,20 +95,20 @@ func (this *GlobalTokenInterceptor) BeforeCreate(ds interface{}, context map[str
 	}
 	return ctn, err
 }
-func (this *GlobalTokenInterceptor) AfterCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
+func (this *GlobalTokenInterceptor) AfterCreate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeLoad(ds interface{}, context map[string]interface{}, id string) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeLoad(resourceId string, ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	if ok, err := checkACL(context, "load"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
+func (this *GlobalTokenInterceptor) AfterLoad(resourceId string, ds interface{}, context map[string]interface{}, data map[string]string) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	if ok, err := checkACL(context, "update"); !ok {
 		return false, err
 	}
@@ -125,66 +125,66 @@ func (this *GlobalTokenInterceptor) BeforeUpdate(ds interface{}, context map[str
 	}
 	return ctn, err
 }
-func (this *GlobalTokenInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
+func (this *GlobalTokenInterceptor) AfterUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeDuplicate(ds interface{}, context map[string]interface{}, id string) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeDuplicate(resourceId string, ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	if ok, err := checkACL(context, "duplicate"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterDuplicate(ds interface{}, context map[string]interface{}, id string, newId string) error {
+func (this *GlobalTokenInterceptor) AfterDuplicate(resourceId string, ds interface{}, context map[string]interface{}, id string, newId string) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeDelete(ds interface{}, context map[string]interface{}, id string) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeDelete(resourceId string, ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	if ok, err := checkACL(context, "delete"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterDelete(ds interface{}, context map[string]interface{}, id string) error {
+func (this *GlobalTokenInterceptor) AfterDelete(resourceId string, ds interface{}, context map[string]interface{}, id string) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeListMap(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeListMap(resourceId string, ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	if ok, err := checkACL(context, "list"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterListMap(ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
+func (this *GlobalTokenInterceptor) AfterListMap(resourceId string, ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeListArray(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeListArray(resourceId string, ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	if ok, err := checkACL(context, "list"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterListArray(ds interface{}, context map[string]interface{}, data [][]string, total int64) error {
+func (this *GlobalTokenInterceptor) AfterListArray(resourceId string, ds interface{}, context map[string]interface{}, data [][]string, total int64) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeQueryMap(ds interface{}, context map[string]interface{}, sqlSelect *string, sqlSelectCount *string, start int64, limit int64, includeTotal bool) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeQueryMap(resourceId string, ds interface{}, context map[string]interface{}, sqlSelect *string, sqlSelectCount *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	if ok, err := checkACL(context, "query"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterQueryMap(ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
+func (this *GlobalTokenInterceptor) AfterQueryMap(resourceId string, ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
 	return nil
 }
-func (this *GlobalTokenInterceptor) BeforeQueryArray(ds interface{}, context map[string]interface{}, sqlSelect *string, sqlSelectCount *string, start int64, limit int64, includeTotal bool) (bool, error) {
+func (this *GlobalTokenInterceptor) BeforeQueryArray(resourceId string, ds interface{}, context map[string]interface{}, sqlSelect *string, sqlSelectCount *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	if ok, err := checkACL(context, "query"); !ok {
 		return false, err
 	}
 	db := ds.(*sql.DB)
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context)
 }
-func (this *GlobalTokenInterceptor) AfterQueryArray(ds interface{}, context map[string]interface{}, data [][]string, total int64) error {
+func (this *GlobalTokenInterceptor) AfterQueryArray(resourceId string, ds interface{}, context map[string]interface{}, data [][]string, total int64) error {
 	return nil
 }

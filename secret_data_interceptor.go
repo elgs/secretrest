@@ -31,7 +31,7 @@ var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
 `
 
-func (this *SecretDataInterceptor) BeforeCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *SecretDataInterceptor) BeforeCreate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
 		data["CREATOR_ID"] = v["ID"]
@@ -41,14 +41,14 @@ func (this *SecretDataInterceptor) BeforeCreate(ds interface{}, context map[stri
 	}
 	return true, nil
 }
-func (this *SecretDataInterceptor) AfterCreate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
+func (this *SecretDataInterceptor) AfterCreate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0600)
 	defer f.Close()
 	text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
 	_, err = f.WriteString(text)
 	return err
 }
-func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string]interface{}, id string) (bool, error) {
+func (this *SecretDataInterceptor) BeforeLoad(resourceId string, ds interface{}, context map[string]interface{}, id string) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
 		context["extra_filter"] = fmt.Sprint("AND CREATOR_ID='", v["ID"], "'")
@@ -58,11 +58,11 @@ func (this *SecretDataInterceptor) BeforeLoad(ds interface{}, context map[string
 
 	return true, nil
 }
-func (this *SecretDataInterceptor) AfterLoad(ds interface{}, context map[string]interface{}, data map[string]string) error {
+func (this *SecretDataInterceptor) AfterLoad(resourceId string, ds interface{}, context map[string]interface{}, data map[string]string) error {
 	data["secret"] = ""
 	return nil
 }
-func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
+func (this *SecretDataInterceptor) BeforeUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
 		data["UPDATER_ID"] = v["ID"]
@@ -70,19 +70,19 @@ func (this *SecretDataInterceptor) BeforeUpdate(ds interface{}, context map[stri
 	}
 	return true, nil
 }
-func (this *SecretDataInterceptor) AfterUpdate(ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
+func (this *SecretDataInterceptor) AfterUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	if db, ok := ds.(*sql.DB); ok {
 		return updateFile(db)
 	}
 	return errors.New("Failed to access database.")
 }
-func (this *SecretDataInterceptor) AfterDelete(ds interface{}, context map[string]interface{}, id string) error {
+func (this *SecretDataInterceptor) AfterDelete(resourceId string, ds interface{}, context map[string]interface{}, id string) error {
 	if db, ok := ds.(*sql.DB); ok {
 		return updateFile(db)
 	}
 	return errors.New("Failed to access database.")
 }
-func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
+func (this *SecretDataInterceptor) BeforeListMap(resourceId string, ds interface{}, context map[string]interface{}, filter *string, sort *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	userToken := context["user_token"]
 	if v, ok := userToken.(map[string]string); ok {
 		userId := v["ID"]
@@ -102,7 +102,7 @@ func (this *SecretDataInterceptor) BeforeListMap(ds interface{}, context map[str
 	}
 	return true, nil
 }
-func (this *SecretDataInterceptor) AfterListMap(ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
+func (this *SecretDataInterceptor) AfterListMap(resourceId string, ds interface{}, context map[string]interface{}, data []map[string]string, total int64) error {
 	for _, v := range data {
 		v["secret"] = ""
 	}
