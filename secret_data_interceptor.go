@@ -23,9 +23,10 @@ type SecretDataInterceptor struct {
 	Id string
 }
 
-var filePath string = "/etc/ppp/chap-secrets"
-
+//test
 //var filePath string = "/Users/elgs/Desktop/chap-secrets"
+//prod
+var filePath string = "/etc/ppp/chap-secrets"
 
 var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
