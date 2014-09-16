@@ -24,7 +24,7 @@ func main() {
 		TokenTable: tokenTable,
 	}
 
-	gorest.RegisterDataOperator(config["url_prefix"].(string), dbo)
+	gorest.RegisterDataOperator("api", dbo)
 
 	r := &gorest.Gorest{
 		EnableHttp: config["enable_http"].(bool),

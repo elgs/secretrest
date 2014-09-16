@@ -148,7 +148,7 @@ func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 }
 
 func updateFile(db *sql.DB) error {
-	m, err := gosqljson.QueryDbToMap(db, false, "SELECT * FROM secret")
+	m, err := gosqljson.QueryDbToMap(db, "upper", "SELECT * FROM secret")
 	f, err := os.OpenFile(filePath, os.O_RDWR|os.O_TRUNC, 0600)
 	defer f.Close()
 	f.WriteString(header)

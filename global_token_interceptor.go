@@ -32,7 +32,7 @@ func checkToken(db *sql.DB, id string, key string, context map[string]interface{
 		}
 
 		gorest.MysqlSafe(&tokenTableString)
-		data, err := gosqljson.QueryDbToMap(db, false, fmt.Sprint("SELECT * FROM ", tokenTableString, " WHERE ID=? AND TOKEN_KEY=? AND STATUS=?"), id, key, "0")
+		data, err := gosqljson.QueryDbToMap(db, "upper", fmt.Sprint("SELECT * FROM ", tokenTableString, " WHERE ID=? AND TOKEN_KEY=? AND STATUS=?"), id, key, "0")
 		if err != nil {
 			fmt.Println(err)
 			return false, err
