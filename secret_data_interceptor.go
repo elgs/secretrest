@@ -61,7 +61,9 @@ func (this *SecretDataInterceptor) BeforeLoad(resourceId string, ds interface{},
 	return true, nil
 }
 func (this *SecretDataInterceptor) AfterLoad(resourceId string, ds interface{}, field []string, context map[string]interface{}, data map[string]string) error {
-	data["secret"] = ""
+	if data["secret"] != "" {
+		data["secret"] = ""
+	}
 	return nil
 }
 func (this *SecretDataInterceptor) BeforeUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
@@ -106,7 +108,9 @@ func (this *SecretDataInterceptor) BeforeListMap(resourceId string, ds interface
 }
 func (this *SecretDataInterceptor) AfterListMap(resourceId string, ds interface{}, field []string, context map[string]interface{}, data []map[string]string, total int64) error {
 	for _, v := range data {
-		v["secret"] = ""
+		if v["secret"] != "" {
+			v["secret"] = ""
+		}
 	}
 	return nil
 }
