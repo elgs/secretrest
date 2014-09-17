@@ -9,6 +9,7 @@ import (
 	"github.com/elgs/gorest"
 	"github.com/elgs/gosqljson"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -16,6 +17,9 @@ import (
 func init() {
 	tableId := "secret"
 	gorest.RegisterDataInterceptor(tableId, &SecretDataInterceptor{Id: "secret"})
+	if runtime.GOOS == "darwin" {
+		filePath = "/Volumes/User/Home/Desktop/chap-secrets"
+	}
 }
 
 type SecretDataInterceptor struct {
@@ -23,10 +27,6 @@ type SecretDataInterceptor struct {
 	Id string
 }
 
-//test
-//var filePath string = "/Volumes/User/Home/Desktop/chap-secrets"
-
-//prod
 var filePath string = "/etc/ppp/chap-secrets"
 
 var header string = `# Secrets for authentication using CHAP
