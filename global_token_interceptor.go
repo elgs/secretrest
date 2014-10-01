@@ -8,6 +8,7 @@ import (
 	"github.com/elgs/gorest"
 	"github.com/elgs/gosqljson"
 	"io/ioutil"
+	"strconv"
 	"time"
 )
 
@@ -108,8 +109,10 @@ func (this *GlobalTokenInterceptor) AfterLoad(resourceId string, ds interface{},
 	//if the content_type in the context is 'bin', it is a file download
 	contentType := context["content_type"]
 	if contentType != nil && contentType.(string) == "bin" {
-		filePath := data["file_path"]
+		filePath := data["path"]
+		fileSize := data["size"]
 		context["file_path"] = filePath
+		context["file_size"], _ = strconv.ParseInt(fileSize, 10, 0)
 	}
 	return nil
 }

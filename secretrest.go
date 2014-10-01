@@ -31,7 +31,6 @@ func main() {
 			fileBasePath, _ = filepath.Abs(fbp.(string))
 		}
 	}
-	fmt.Println(fileBasePath)
 	dbo := &gorest.MySqlDataOperator{
 		Ds:         ds,
 		DbType:     dbType,
@@ -50,6 +49,8 @@ func main() {
 		PortHttps:     uint16(config["port_https"].(float64)),
 		CertFileHttps: config["cert_file_https"].(string),
 		KeyFileHttps:  config["key_file_https"].(string),
+
+		FileBasePath: fileBasePath,
 	}
 	r.Serve()
 }
