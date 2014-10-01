@@ -105,6 +105,12 @@ func (this *GlobalTokenInterceptor) BeforeLoad(resourceId string, ds interface{}
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context, resourceId)
 }
 func (this *GlobalTokenInterceptor) AfterLoad(resourceId string, ds interface{}, field []string, context map[string]interface{}, data map[string]string) error {
+	//if the content_type in the context is 'bin', it is a file download
+	contentType := context["content_type"]
+	if contentType != nil && contentType.(string) == "bin" {
+		filePath := data["file_path"]
+		context["file_path"] = filePath
+	}
 	return nil
 }
 func (this *GlobalTokenInterceptor) BeforeUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {

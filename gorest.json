@@ -2,6 +2,7 @@
 	"db_type": "sqlite3",
 	"data_source": "./chap-secrets.sqlite",
 	"token_table": "token",
+	"file_base_path": "/Desktop/files",
 	
 	"enable_http": true,
 	"host_http": "0.0.0.0",

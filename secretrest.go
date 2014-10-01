@@ -7,6 +7,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"io/ioutil"
 	"os"
+	"os/user"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -18,6 +21,17 @@ func main() {
 	ds := config["data_source"].(string)
 	dbType := config["db_type"].(string)
 	tokenTable := config["token_table"].(string)
+	fbp := config["file_base_path"]
+	u, _ := user.Current()
+	fileBasePath, _ := filepath.Abs(u.HomeDir + string(os.PathSeparator) + "files")
+	if fbp != nil {
+		if !strings.HasPrefix(fbp.(string), string(os.PathSeparator)) {
+			fileBasePath, _ = filepath.Abs(u.HomeDir + string(os.PathSeparator) + fbp.(string))
+		} else {
+			fileBasePath, _ = filepath.Abs(fbp.(string))
+		}
+	}
+	fmt.Println(fileBasePath)
 	dbo := &gorest.MySqlDataOperator{
 		Ds:         ds,
 		DbType:     dbType,
