@@ -110,8 +110,10 @@ func (this *GlobalTokenInterceptor) AfterLoad(resourceId string, ds interface{},
 	contentType := context["content_type"]
 	if contentType != nil && contentType.(string) == "bin" {
 		filePath := data["path"]
+		fileName := data["name"]
 		fileSize := data["size"]
 		context["file_path"] = filePath
+		context["file_name"] = fileName
 		context["file_size"], _ = strconv.ParseInt(fileSize, 10, 0)
 	}
 	return nil

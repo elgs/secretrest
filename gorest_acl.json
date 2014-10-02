@@ -5,7 +5,14 @@
 		"update": true,
 		"duplicate": true,
 		"delete": true,
-		"list": true,
-		"query": false
+		"list": true
+	},
+	"file": {
+		"load": true,
+		"create": true,
+		"update": true,
+		"duplicate": true,
+		"delete": true,
+		"list": true
 	}
 }
