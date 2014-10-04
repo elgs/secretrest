@@ -108,9 +108,9 @@ func (this *GlobalTokenInterceptor) BeforeLoad(resourceId string, ds interface{}
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context, resourceId)
 }
 func (this *GlobalTokenInterceptor) AfterLoad(resourceId string, ds interface{}, field []string, context map[string]interface{}, data map[string]string) error {
-	//if the content_type in the context is 'bin', it is a file download
-	contentType := context["content_type"]
-	if contentType != nil && contentType.(string) == "bin" {
+	//if the bin in the context is true, it is a file download
+	bin := context["bin"]
+	if bin != nil && bin.(bool) {
 		filePath := data["path"]
 		fileName := data["name"]
 		fileSize := data["size"]
@@ -158,8 +158,8 @@ func (this *GlobalTokenInterceptor) BeforeDelete(resourceId string, ds interface
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context, resourceId)
 }
 func (this *GlobalTokenInterceptor) AfterDelete(resourceId string, ds interface{}, context map[string]interface{}, id string) error {
-	contentType := context["content_type"]
-	if contentType != nil && contentType.(string) == "bin" {
+	bin := context["bin"]
+	if bin != nil && bin.(bool) {
 		fileBasePath := context["file_base_path"].(string)
 		filePath := fileBasePath + string(os.PathSeparator) + id[0:2] + string(os.PathSeparator) + id
 		filePath, _ = filepath.Abs(filePath)
