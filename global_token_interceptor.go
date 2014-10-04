@@ -8,6 +8,8 @@ import (
 	"github.com/elgs/gorest"
 	"github.com/elgs/gosqljson"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -156,6 +158,13 @@ func (this *GlobalTokenInterceptor) BeforeDelete(resourceId string, ds interface
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context, resourceId)
 }
 func (this *GlobalTokenInterceptor) AfterDelete(resourceId string, ds interface{}, context map[string]interface{}, id string) error {
+	contentType := context["content_type"]
+	if contentType != nil && contentType.(string) == "bin" {
+		fileBasePath := context["file_base_path"].(string)
+		filePath := fileBasePath + string(os.PathSeparator) + id[0:2] + string(os.PathSeparator) + id
+		filePath, _ = filepath.Abs(filePath)
+		return os.Remove(filePath)
+	}
 	return nil
 }
 func (this *GlobalTokenInterceptor) BeforeListMap(resourceId string, ds interface{}, field []string, context map[string]interface{}, filter *string, sort *string, group *string, start int64, limit int64, includeTotal bool) (bool, error) {
