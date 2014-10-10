@@ -88,11 +88,11 @@ func (this *GlobalTokenInterceptor) BeforeCreate(resourceId string, ds interface
 		if context["meta"] != nil && context["meta"].(bool) {
 			userToken := context["user_token"]
 			if v, ok := userToken.(map[string]string); ok {
-				data["CREATOR_ID"] = v["USER_ID"]
-				data["CREATOR_CODE"] = v["USER_ID"]
+				data["CREATOR_ID"] = v["ID"]
+				data["CREATOR_CODE"] = v["ID"]
 				data["CREATE_TIME"] = time.Now()
-				data["UPDATER_ID"] = v["USER_ID"]
-				data["UPDATER_CODE"] = v["USER_ID"]
+				data["UPDATER_ID"] = v["ID"]
+				data["UPDATER_CODE"] = v["ID"]
 				data["UPDATE_TIME"] = time.Now()
 			}
 		}
@@ -132,8 +132,8 @@ func (this *GlobalTokenInterceptor) BeforeUpdate(resourceId string, ds interface
 		if context["meta"] != nil && context["meta"].(bool) {
 			userToken := context["user_token"]
 			if v, ok := userToken.(map[string]string); ok {
-				data["UPDATER_ID"] = v["USER_ID"]
-				data["UPDATER_CODE"] = v["USER_ID"]
+				data["UPDATER_ID"] = v["ID"]
+				data["UPDATER_CODE"] = v["ID"]
 				data["UPDATE_TIME"] = time.Now()
 			}
 		}
