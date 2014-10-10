@@ -33,18 +33,6 @@ var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
 `
 
-//func (this *SecretDataInterceptor) BeforeCreate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
-//	userToken := context["user_token"]
-//	if v, ok := userToken.(map[string]string); ok {
-//		data["CREATOR_ID"] = v["ID"]
-//		data["CREATOR_CODE"] = v["ID"]
-//		data["CREATE_TIME"] = time.Now()
-//		data["UPDATER_ID"] = v["ID"]
-//		data["UPDATER_CODE"] = v["ID"]
-//		data["UPDATE_TIME"] = time.Now()
-//	}
-//	return true, nil
-//}
 func (this *SecretDataInterceptor) AfterCreate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0600)
 	defer f.Close()
@@ -69,15 +57,6 @@ func (this *SecretDataInterceptor) AfterLoad(resourceId string, ds interface{}, 
 	return nil
 }
 
-//func (this *SecretDataInterceptor) BeforeUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) (bool, error) {
-//	userToken := context["user_token"]
-//	if v, ok := userToken.(map[string]string); ok {
-//		data["UPDATER_ID"] = v["ID"]
-//		data["UPDATER_CODE"] = v["ID"]
-//		data["UPDATE_TIME"] = time.Now()
-//	}
-//	return true, nil
-//}
 func (this *SecretDataInterceptor) AfterUpdate(resourceId string, ds interface{}, context map[string]interface{}, data map[string]interface{}) error {
 	if db, ok := ds.(*sql.DB); ok {
 		return updateFile(db)
