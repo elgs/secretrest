@@ -28,7 +28,6 @@ type SecretDataInterceptor struct {
 }
 
 var filePath string = "/etc/ppp/chap-secrets"
-
 var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
 `
