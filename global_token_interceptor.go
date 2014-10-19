@@ -20,6 +20,7 @@ func init() {
 }
 
 var acl = make(map[string]map[string]bool)
+
 var tokenRegistry = make(map[string]map[string]string)
 
 func checkToken(db *sql.DB, id string, key string, context map[string]interface{}, tableId string) (bool, error) {
