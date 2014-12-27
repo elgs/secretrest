@@ -22,8 +22,14 @@ func main() {
 	dbType := config["db_type"].(string)
 	tokenTable := config["token_table"].(string)
 	fbp := config["file_base_path"]
-	u, _ := user.Current()
-	fileBasePath, _ := filepath.Abs(u.HomeDir + string(os.PathSeparator) + "files")
+	u, err := user.Current()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fileBasePath, err := filepath.Abs(u.HomeDir + string(os.PathSeparator) + "files")
+	if err != nil {
+		fmt.Println(err)
+	}
 	if fbp != nil {
 		if !strings.HasPrefix(fbp.(string), string(os.PathSeparator)) {
 			fileBasePath, _ = filepath.Abs(u.HomeDir + string(os.PathSeparator) + fbp.(string))
@@ -37,21 +43,45 @@ func main() {
 		TokenTable: tokenTable,
 	}
 
-	gorest.RegisterDataOperator("api", dbo)
-
 	r := &gorest.Gorest{
-		EnableHttp: config["enable_http"].(bool),
-		HostHttp:   config["host_http"].(string),
-		PortHttp:   uint16(config["port_http"].(float64)),
-
-		EnableHttps:   config["enable_https"].(bool),
-		HostHttps:     config["host_https"].(string),
-		PortHttps:     uint16(config["port_https"].(float64)),
-		CertFileHttps: config["cert_file_https"].(string),
-		KeyFileHttps:  config["key_file_https"].(string),
-
 		FileBasePath: fileBasePath,
 	}
+
+	if v, ok := config["enable_http"].(bool); ok {
+		r.EnableHttp = v
+	}
+	if v, ok := config["host_http"].(string); ok {
+		r.HostHttp = v
+	}
+	if v, ok := config["port_http"].(uint16); ok {
+		r.PortHttp = v
+	}
+	if v, ok := config["enable_https"].(bool); ok {
+		r.EnableHttps = v
+	}
+	if v, ok := config["host_https"].(string); ok {
+		r.HostHttps = v
+	}
+	if v, ok := config["port_https"].(uint16); ok {
+		r.PortHttps = v
+	}
+	if v, ok := config["cert_file_https"].(string); ok {
+		r.CertFileHttps = v
+	}
+	if v, ok := config["cert_root_https"].(string); ok {
+		r.CertRootHttps = v
+	}
+	if v, ok := config["key_file_https"].(string); ok {
+		r.KeyFileHttps = v
+	}
+	if v, ok := config["session_key"].(string); ok {
+		r.SessionKey = v
+	}
+
+	gorest.RegisterDataOperator("api", dbo)
+	gorest.RegisterHttpHandlers(dbo, r)
+	gorest.StartDaemons(dbo)
+
 	r.Serve()
 }
 
