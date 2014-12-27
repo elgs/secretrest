@@ -53,8 +53,8 @@ func main() {
 	if v, ok := config["host_http"].(string); ok {
 		r.HostHttp = v
 	}
-	if v, ok := config["port_http"].(uint16); ok {
-		r.PortHttp = v
+	if v, ok := config["port_http"].(float64); ok {
+		r.PortHttp = uint16(v)
 	}
 	if v, ok := config["enable_https"].(bool); ok {
 		r.EnableHttps = v
@@ -62,8 +62,8 @@ func main() {
 	if v, ok := config["host_https"].(string); ok {
 		r.HostHttps = v
 	}
-	if v, ok := config["port_https"].(uint16); ok {
-		r.PortHttps = v
+	if v, ok := config["port_https"].(float64); ok {
+		r.PortHttps = uint16(v)
 	}
 	if v, ok := config["cert_file_https"].(string); ok {
 		r.CertFileHttps = v
