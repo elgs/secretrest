@@ -12,6 +12,8 @@
 	"host_https": "0.0.0.0",
 	"port_https": 8443,
 	"cert_file_https": "cert.crt",
-	"key_file_https": "private.key"
+	"key_file_https": "private.key",
+	
+	"session_key": "763DFD9CF75F4B36B1FA51614B41AE7E"
 	
 }
