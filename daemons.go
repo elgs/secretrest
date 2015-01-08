@@ -22,7 +22,7 @@ func init() {
 					fmt.Println("Failed to execute:", err, command)
 					fmt.Println(string(output))
 				} else {
-					fmt.Println(output)
+					fmt.Println(string(output))
 				}
 			}
 		},
