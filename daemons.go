@@ -16,7 +16,7 @@ func init() {
 		Cron: "0/5 * * * * *",
 		MakeAction: func(dbo gorest.DataOperator) func() {
 			return func() {
-				command := fmt.Sprint("last -F")
+				command := fmt.Sprint("last -F | grep ppp")
 				output, err := exec.Command("bash", "-c", command).CombinedOutput()
 				if err != nil {
 					fmt.Println("Failed to execute:", err, command)
