@@ -77,7 +77,7 @@ func main() {
 
 	gorest.RegisterDataOperator("api", dbo)
 	gorest.RegisterHttpHandlers(dbo, r)
-	gorest.StartDaemons(dbo)
+	gorest.StartDaemons(dbo, r)
 
 	r.Serve()
 }

@@ -12,7 +12,7 @@ import (
 func init() {
 	//gorest.RegisterJob("check_last", &gorest.Job{
 	//	Cron: "0/5 * * * * *",
-	//	MakeAction: func(dbo gorest.DataOperator) func() {
+	//	MakeAction: func(dbo gorest.DataOperator, grConfig *gorest.Gorest) func() {
 	//		return func() {
 	//		}
 	//	},
