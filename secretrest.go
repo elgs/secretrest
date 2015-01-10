@@ -68,9 +68,6 @@ func main() {
 	if v, ok := config["cert_file_https"].(string); ok {
 		r.CertFileHttps = v
 	}
-	if v, ok := config["cert_root_https"].(string); ok {
-		r.CertRootHttps = v
-	}
 	if v, ok := config["key_file_https"].(string); ok {
 		r.KeyFileHttps = v
 	}
