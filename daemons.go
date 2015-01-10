@@ -5,28 +5,18 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	"github.com/elgs/gorest"
 	"io/ioutil"
 	"net/http"
-	"os/exec"
 )
 
 func init() {
-	gorest.RegisterJob("check_last", &gorest.Job{
-		Cron: "0/5 * * * * *",
-		MakeAction: func(dbo gorest.DataOperator) func() {
-			return func() {
-				command := fmt.Sprint("last -F | grep ppp")
-				output, err := exec.Command("bash", "-c", command).CombinedOutput()
-				if err != nil {
-					fmt.Println("Failed to execute:", err, command)
-					fmt.Println(string(output))
-				} else {
-					fmt.Println(string(output))
-				}
-			}
-		},
-	})
+	//gorest.RegisterJob("check_last", &gorest.Job{
+	//	Cron: "0/5 * * * * *",
+	//	MakeAction: func(dbo gorest.DataOperator) func() {
+	//		return func() {
+	//		}
+	//	},
+	//})
 }
 
 func httpRequest(url string, method string, data string, apiTokenId string, apiTokenKey string) ([]byte, error) {
