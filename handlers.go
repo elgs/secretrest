@@ -59,6 +59,7 @@ func init() {
 
 				asof := r.FormValue("asof")
 				command := fmt.Sprint("lastasof -F -t " + asof + " | grep ppp")
+				fmt.Println(command)
 				output, err := exec.Command("bash", "-c", command).CombinedOutput()
 				if err != nil {
 					fmt.Println("Failed to execute:", err, command)
