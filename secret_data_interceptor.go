@@ -32,7 +32,7 @@ var header string = `# Secrets for authentication using CHAP
 # client	server	secret			IP addresses
 `
 
-func (this *SecretDataInterceptor) AfterCreate(resourceId string, db *sql.DB, context map[string]interface{}, data map[string]interface{}) error {
+func (this *SecretDataInterceptor) AfterCreate(resourceId string, db *sql.DB, context map[string]interface{}, info map[string]interface{}, data map[string]interface{}) error {
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0600)
 	defer f.Close()
 	text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
@@ -56,11 +56,11 @@ func (this *SecretDataInterceptor) AfterLoad(resourceId string, db *sql.DB, fiel
 	return nil
 }
 
-func (this *SecretDataInterceptor) AfterUpdate(resourceId string, db *sql.DB, context map[string]interface{}, data map[string]interface{}) error {
+func (this *SecretDataInterceptor) AfterUpdate(resourceId string, db *sql.DB, context map[string]interface{}, info map[string]interface{}, data map[string]interface{}) error {
 	return updateFile(db)
 	return errors.New("Failed to access database.")
 }
-func (this *SecretDataInterceptor) AfterDelete(resourceId string, db *sql.DB, context map[string]interface{}, id string) error {
+func (this *SecretDataInterceptor) AfterDelete(resourceId string, db *sql.DB, context map[string]interface{}, info map[string]interface{}, id string) error {
 	return updateFile(db)
 	return errors.New("Failed to access database.")
 }
