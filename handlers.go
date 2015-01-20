@@ -65,7 +65,7 @@ func init() {
 				if asof == "" {
 					asof = "19010101000000"
 				}
-				command := fmt.Sprint(`join -1 2 -2 1 <(last -F | grep 'ppp.*still' | sort -k2) <(cat /proc/net/dev | grep ppp | awk '{gsub(":","",$1); print $1, $2, $10}' | sort) ; lastasof -F -t ` + asof + " | grep ppp")
+				command := fmt.Sprint(`join -1 2 -2 1 <(last -F | grep 'ppp.*still' | sort -k2) <(cat /proc/net/dev | grep ppp | awk '{gsub(":","",$1); print $1, $2, $10}' | sort) ; lastasof -F -t ` + asof + " | grep -v still | grep ppp")
 				output, err := exec.Command("bash", "-c", command).CombinedOutput()
 				if err != nil {
 					fmt.Println("Failed to execute:", err, command)
