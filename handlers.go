@@ -30,29 +30,6 @@ func init() {
 			}
 		})
 
-	gorest.RegisterHandler("/lastasof",
-		func(dbo gorest.DataOperator, gr *gorest.Gorest) func(w http.ResponseWriter, r *http.Request) {
-			return func(w http.ResponseWriter, r *http.Request) {
-				if r.FormValue("key") != gr.SessionKey {
-					fmt.Fprintln(w, "Attack!!!")
-					return
-				}
-
-				asof := r.FormValue("asof")
-				if asof == "" {
-					asof = "19010101000000"
-				}
-				command := fmt.Sprint("lastasof -F -t " + asof + " | grep ppp")
-				output, err := exec.Command("bash", "-c", command).CombinedOutput()
-				if err != nil {
-					fmt.Println("Failed to execute:", err, command)
-					fmt.Println(string(output))
-				} else {
-					fmt.Fprint(w, string(output))
-				}
-			}
-		})
-
 	gorest.RegisterHandler("/ppp_lastasof",
 		func(dbo gorest.DataOperator, gr *gorest.Gorest) func(w http.ResponseWriter, r *http.Request) {
 			return func(w http.ResponseWriter, r *http.Request) {
@@ -66,7 +43,7 @@ func init() {
 					asof = "19010101000000"
 				}
 				current := `join -1 2 -2 1 <(last -F | grep 'ppp.*still' | sort -k2) <(cat /proc/net/dev | grep ppp | awk '{gsub(":","",$1); print $1, $2, $10}' | sort)`
-				history := `lastasof -F -t ` + asof + " | grep -v still | grep ppp"
+				history := `lastasof -F -t ` + asof + ` | egrep -v "crash|down|still|gone" | grep ppp`
 				command := fmt.Sprint(history + " ; " + current)
 				output, err := exec.Command("bash", "-c", command).CombinedOutput()
 				if err != nil {
