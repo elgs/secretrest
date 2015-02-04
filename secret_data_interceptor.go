@@ -58,11 +58,9 @@ func (this *SecretDataInterceptor) AfterLoad(resourceId string, db *sql.DB, fiel
 
 func (this *SecretDataInterceptor) AfterUpdate(resourceId string, db *sql.DB, context map[string]interface{}, info map[string]interface{}, data map[string]interface{}) error {
 	return updateFile(db)
-	return errors.New("Failed to access database.")
 }
 func (this *SecretDataInterceptor) AfterDelete(resourceId string, db *sql.DB, context map[string]interface{}, info map[string]interface{}, id string) error {
 	return updateFile(db)
-	return errors.New("Failed to access database.")
 }
 func (this *SecretDataInterceptor) BeforeListMap(resourceId string, db *sql.DB, field []string, context map[string]interface{}, filter *string, sort *string, group *string, start int64, limit int64, includeTotal bool) (bool, error) {
 	userToken := context["user_token"]
