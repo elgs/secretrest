@@ -54,4 +54,27 @@ func init() {
 				}
 			}
 		})
+
+	gorest.RegisterHandler("/kill_ppp",
+		func(dbo gorest.DataOperator, gr *gorest.Gorest) func(w http.ResponseWriter, r *http.Request) {
+			return func(w http.ResponseWriter, r *http.Request) {
+				if r.FormValue("key") != gr.SessionKey {
+					fmt.Fprintln(w, "Attack!!!")
+					return
+				}
+
+				ppp := r.FormValue("ppp")
+				if asof == "" {
+					return
+				}
+				command := fmt.Sprint("kill -TERM `cat /var/run/" + ppp + ".pid`")
+				output, err := exec.Command("bash", "-c", command).CombinedOutput()
+				if err != nil {
+					fmt.Println("Failed to execute:", err, command)
+					fmt.Println(string(output))
+				} else {
+					fmt.Fprint(w, string(output))
+				}
+			}
+		})
 }
