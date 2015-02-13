@@ -64,7 +64,7 @@ func init() {
 				}
 
 				ppp := r.FormValue("ppp")
-				if asof == "" {
+				if ppp == "" {
 					return
 				}
 				command := fmt.Sprint("kill -TERM `cat /var/run/" + ppp + ".pid`")
