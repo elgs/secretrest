@@ -42,7 +42,7 @@ func init() {
 				if asof == "" {
 					asof = "19010101000000"
 				}
-				current := `join -1 2 -2 1 <(last -F | grep 'ppp.*still' | sort -k2) <(cat /proc/net/dev | grep ppp | awk '{gsub(":","",$1); print $1, $2, $10}' | sort)`
+				current := `join -1 2 -2 1 <(last -F | grep 'ppp.*still' | sort -k2) <(cat /proc/net/dev | grep ppp | awk -F ':[ \t]*|[ \t]+' '{print $2,$3,$11}' | sort)`
 				history := `lastasof -F -t ` + asof + ` | egrep -v "crash|down|still|gone" | grep ppp`
 				command := fmt.Sprint(history + " ; " + current)
 				output, err := exec.Command("bash", "-c", command).CombinedOutput()
