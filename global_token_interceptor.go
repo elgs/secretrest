@@ -181,6 +181,6 @@ func (this *GlobalTokenInterceptor) BeforeListArray(resourceId string, db *sql.D
 	}
 	return checkToken(db, context["api_token_id"].(string), context["api_token_key"].(string), context, resourceId)
 }
-func (this *GlobalTokenInterceptor) AfterListArray(resourceId string, db *sql.DB, field []string, context map[string]interface{}, data [][]string, total int64) error {
+func (this *GlobalTokenInterceptor) AfterListArray(resourceId string, db *sql.DB, field []string, context map[string]interface{}, headers []string, data [][]string, total int64) error {
 	return nil
 }
