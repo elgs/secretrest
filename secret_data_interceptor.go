@@ -2,10 +2,10 @@ package main
 
 import (
 	"bufio"
-	"code.google.com/p/go-uuid/uuid"
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/elgs/go-uuid/uuid"
 	"github.com/elgs/gorest"
 	"github.com/elgs/gosqljson"
 	"os"
