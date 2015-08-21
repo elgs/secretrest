@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/elgs/go-uuid/uuid"
+	//	"github.com/elgs/go-uuid/uuidb"
 	"github.com/elgs/gorest"
 	"github.com/elgs/gosqljson"
 	"os"
@@ -110,7 +110,7 @@ func loadFromFile(db *sql.DB, context map[string]interface{}) error {
 		}
 		fields := strings.Fields(text)
 		if len(fields) >= 4 {
-			values := []interface{}{uuid.New(), fields[0], fields[1], fields[2], fields[3], "0"}
+			values := []interface{}{"", fields[0], fields[1], fields[2], fields[3], "0"}
 			values = append(values, userId, userId, time.Now(), userId, userId, time.Now())
 			_, err := gosqljson.ExecDb(db, `INSERT OR IGNORE INTO secret(ID,CLIENT,SERVER,SECRET,IP_ADDRESSES,
 			STATUS,CREATOR_ID,CREATOR_CODE,CREATE_TIME,UPDATER_ID,UPDATER_CODE,UPDATE_TIME) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)`, values...)
