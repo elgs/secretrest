@@ -36,6 +36,7 @@ func (this *SecretDataInterceptor) AfterCreate(resourceId string, db *sql.DB, co
 	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_WRONLY, 0600)
 	defer f.Close()
 	text := fmt.Sprint(data["CLIENT"], "\t", data["SERVER"], "\t", data["SECRET"], "\t", data["IP_ADDRESSES"], "\n")
+	fmt.Println(text)
 	_, err = f.WriteString(text)
 	return err
 }
