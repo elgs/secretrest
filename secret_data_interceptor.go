@@ -5,13 +5,14 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/elgs/gorest"
-	"github.com/elgs/gosqljson"
-	"github.com/satori/go.uuid"
 	"os"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/elgs/gorest"
+	"github.com/elgs/gosqljson"
+	"github.com/satori/go.uuid"
 )
 
 func init() {
